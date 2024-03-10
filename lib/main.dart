@@ -15,6 +15,7 @@ import 'models/ModelProvider.dart';
 import 'amplifyconfiguration.dart';
 import 'screens/onboarding/onboarding-onboarding-1.dart';
 import 'screens/onboarding/onboarding-onboarding-2.dart';
+import 'screens/onboarding/onboarding.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => Onboarding2(),
+        builder: (context, state) => Onboarding(),
       ),
       GoRoute(
         path: '/manage-budget-entry',
