@@ -17,9 +17,15 @@ type ExpenseEntry @model @auth(rules: [{ allow: owner }]) {
   exchangeRate: Float
   convertedAmount: Float
   receipt: String
+  splits: [Split] @hasMany
 }
 
 type SplitAmount {
+  userName: String!
+  amount: Float!
+}
+type Split @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
   userName: String!
   amount: Float!
 }

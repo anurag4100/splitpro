@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
+import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the ExpenseEntry type in your schema. */
@@ -37,6 +38,7 @@ class ExpenseEntry extends amplify_core.Model {
   final double? _exchangeRate;
   final double? _convertedAmount;
   final String? _receipt;
+  final List<Split>? _splits;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
   final String? _expenseGroupExpensesId;
@@ -130,6 +132,10 @@ class ExpenseEntry extends amplify_core.Model {
     return _receipt;
   }
   
+  List<Split>? get splits {
+    return _splits;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -142,9 +148,9 @@ class ExpenseEntry extends amplify_core.Model {
     return _expenseGroupExpensesId;
   }
   
-  const ExpenseEntry._internal({required this.id, required userName, required amount, required currency, required groupId, purpose, category, dateTime, exchangeRate, convertedAmount, receipt, createdAt, updatedAt, expenseGroupExpensesId}): _userName = userName, _amount = amount, _currency = currency, _groupId = groupId, _purpose = purpose, _category = category, _dateTime = dateTime, _exchangeRate = exchangeRate, _convertedAmount = convertedAmount, _receipt = receipt, _createdAt = createdAt, _updatedAt = updatedAt, _expenseGroupExpensesId = expenseGroupExpensesId;
+  const ExpenseEntry._internal({required this.id, required userName, required amount, required currency, required groupId, purpose, category, dateTime, exchangeRate, convertedAmount, receipt, splits, createdAt, updatedAt, expenseGroupExpensesId}): _userName = userName, _amount = amount, _currency = currency, _groupId = groupId, _purpose = purpose, _category = category, _dateTime = dateTime, _exchangeRate = exchangeRate, _convertedAmount = convertedAmount, _receipt = receipt, _splits = splits, _createdAt = createdAt, _updatedAt = updatedAt, _expenseGroupExpensesId = expenseGroupExpensesId;
   
-  factory ExpenseEntry({String? id, required String userName, required double amount, required String currency, required String groupId, String? purpose, String? category, String? dateTime, double? exchangeRate, double? convertedAmount, String? receipt, String? expenseGroupExpensesId}) {
+  factory ExpenseEntry({String? id, required String userName, required double amount, required String currency, required String groupId, String? purpose, String? category, String? dateTime, double? exchangeRate, double? convertedAmount, String? receipt, List<Split>? splits, String? expenseGroupExpensesId}) {
     return ExpenseEntry._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       userName: userName,
@@ -157,6 +163,7 @@ class ExpenseEntry extends amplify_core.Model {
       exchangeRate: exchangeRate,
       convertedAmount: convertedAmount,
       receipt: receipt,
+      splits: splits != null ? List<Split>.unmodifiable(splits) : splits,
       expenseGroupExpensesId: expenseGroupExpensesId);
   }
   
@@ -179,6 +186,7 @@ class ExpenseEntry extends amplify_core.Model {
       _exchangeRate == other._exchangeRate &&
       _convertedAmount == other._convertedAmount &&
       _receipt == other._receipt &&
+      DeepCollectionEquality().equals(_splits, other._splits) &&
       _expenseGroupExpensesId == other._expenseGroupExpensesId;
   }
   
@@ -209,7 +217,7 @@ class ExpenseEntry extends amplify_core.Model {
     return buffer.toString();
   }
   
-  ExpenseEntry copyWith({String? userName, double? amount, String? currency, String? groupId, String? purpose, String? category, String? dateTime, double? exchangeRate, double? convertedAmount, String? receipt, String? expenseGroupExpensesId}) {
+  ExpenseEntry copyWith({String? userName, double? amount, String? currency, String? groupId, String? purpose, String? category, String? dateTime, double? exchangeRate, double? convertedAmount, String? receipt, List<Split>? splits, String? expenseGroupExpensesId}) {
     return ExpenseEntry._internal(
       id: id,
       userName: userName ?? this.userName,
@@ -222,6 +230,7 @@ class ExpenseEntry extends amplify_core.Model {
       exchangeRate: exchangeRate ?? this.exchangeRate,
       convertedAmount: convertedAmount ?? this.convertedAmount,
       receipt: receipt ?? this.receipt,
+      splits: splits ?? this.splits,
       expenseGroupExpensesId: expenseGroupExpensesId ?? this.expenseGroupExpensesId);
   }
   
@@ -236,6 +245,7 @@ class ExpenseEntry extends amplify_core.Model {
     ModelFieldValue<double?>? exchangeRate,
     ModelFieldValue<double?>? convertedAmount,
     ModelFieldValue<String?>? receipt,
+    ModelFieldValue<List<Split>?>? splits,
     ModelFieldValue<String?>? expenseGroupExpensesId
   }) {
     return ExpenseEntry._internal(
@@ -250,6 +260,7 @@ class ExpenseEntry extends amplify_core.Model {
       exchangeRate: exchangeRate == null ? this.exchangeRate : exchangeRate.value,
       convertedAmount: convertedAmount == null ? this.convertedAmount : convertedAmount.value,
       receipt: receipt == null ? this.receipt : receipt.value,
+      splits: splits == null ? this.splits : splits.value,
       expenseGroupExpensesId: expenseGroupExpensesId == null ? this.expenseGroupExpensesId : expenseGroupExpensesId.value
     );
   }
@@ -266,12 +277,18 @@ class ExpenseEntry extends amplify_core.Model {
       _exchangeRate = (json['exchangeRate'] as num?)?.toDouble(),
       _convertedAmount = (json['convertedAmount'] as num?)?.toDouble(),
       _receipt = json['receipt'],
+      _splits = json['splits'] is List
+        ? (json['splits'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Split.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null,
       _expenseGroupExpensesId = json['expenseGroupExpensesId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'userName': _userName, 'amount': _amount, 'currency': _currency, 'groupId': _groupId, 'purpose': _purpose, 'category': _category, 'dateTime': _dateTime, 'exchangeRate': _exchangeRate, 'convertedAmount': _convertedAmount, 'receipt': _receipt, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'expenseGroupExpensesId': _expenseGroupExpensesId
+    'id': id, 'userName': _userName, 'amount': _amount, 'currency': _currency, 'groupId': _groupId, 'purpose': _purpose, 'category': _category, 'dateTime': _dateTime, 'exchangeRate': _exchangeRate, 'convertedAmount': _convertedAmount, 'receipt': _receipt, 'splits': _splits?.map((Split? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'expenseGroupExpensesId': _expenseGroupExpensesId
   };
   
   Map<String, Object?> toMap() => {
@@ -286,6 +303,7 @@ class ExpenseEntry extends amplify_core.Model {
     'exchangeRate': _exchangeRate,
     'convertedAmount': _convertedAmount,
     'receipt': _receipt,
+    'splits': _splits,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt,
     'expenseGroupExpensesId': _expenseGroupExpensesId
@@ -303,6 +321,9 @@ class ExpenseEntry extends amplify_core.Model {
   static final EXCHANGERATE = amplify_core.QueryField(fieldName: "exchangeRate");
   static final CONVERTEDAMOUNT = amplify_core.QueryField(fieldName: "convertedAmount");
   static final RECEIPT = amplify_core.QueryField(fieldName: "receipt");
+  static final SPLITS = amplify_core.QueryField(
+    fieldName: "splits",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Split'));
   static final EXPENSEGROUPEXPENSESID = amplify_core.QueryField(fieldName: "expenseGroupExpensesId");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "ExpenseEntry";
@@ -382,6 +403,13 @@ class ExpenseEntry extends amplify_core.Model {
       key: ExpenseEntry.RECEIPT,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+      key: ExpenseEntry.SPLITS,
+      isRequired: false,
+      ofModelName: 'Split',
+      associatedKey: Split.EXPENSEENTRYSPLITSID
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(

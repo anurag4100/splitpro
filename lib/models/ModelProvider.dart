@@ -23,18 +23,20 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'BudgetEntry.dart';
 import 'ExpenseEntry.dart';
 import 'ExpenseGroup.dart';
+import 'Split.dart';
 import 'SplitAmount.dart';
 
 export 'BudgetEntry.dart';
 export 'ExpenseEntry.dart';
 export 'ExpenseGroup.dart';
+export 'Split.dart';
 export 'SplitAmount.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "20467f07a068ebf05ae397280b79cd49";
+  String version = "021a4e04ffdd93b1fa62fbd62fe9eba7";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [BudgetEntry.schema, ExpenseEntry.schema, ExpenseGroup.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [BudgetEntry.schema, ExpenseEntry.schema, ExpenseGroup.schema, Split.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [SplitAmount.schema];
   static final ModelProvider _instance = ModelProvider();
@@ -49,6 +51,8 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
         return ExpenseEntry.classType;
       case "ExpenseGroup":
         return ExpenseGroup.classType;
+      case "Split":
+        return Split.classType;
       default:
         throw Exception("Failed to find model in model provider for model name: " + modelName);
     }
