@@ -29,6 +29,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   late List<String> _userNames = [];
   String? _selectedUserName = null;
+  String? _selectedCategory = null;
   Future<void> _navigateToGroupDetails({ExpenseGroup? expenseGroup}) async {
     await context.pushNamed('group-details', extra: expenseGroup);
   }
@@ -132,16 +133,26 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 },
               ),
               TextFormField(
-                controller: _currencyController,
-                decoration: InputDecoration(labelText: 'Currency'),
-              ),
-              TextFormField(
                 controller: _purposeController,
                 decoration: InputDecoration(labelText: 'Purpose'),
               ),
-              TextFormField(
-                controller: _categoryController,
-                decoration: InputDecoration(labelText: 'Category'),
+              DropdownButtonFormField<String>(
+                value: _selectedCategory ?? 'Grocery',
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedCategory = newValue;
+                  });
+                },
+                items: <String>['Grocery', 'Medical', 'Leisure', 'Others']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                decoration: InputDecoration(
+                  labelText: 'Category',
+                ),
               ),
               TextField(
                 controller: _dateTimeController,
@@ -153,16 +164,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   ),
                 ),
                 readOnly: true, // Disable editing directly
-              ),
-              TextFormField(
-                controller: _exchangeRateController,
-                decoration: InputDecoration(labelText: 'Exchange Rate'),
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
-                controller: _convertedAmountController,
-                decoration: InputDecoration(labelText: 'Converted Amount'),
-                keyboardType: TextInputType.number,
               ),
               TextFormField(
                 controller: _receiptController,
@@ -182,9 +183,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       purpose: _purposeController.text,
                       category: _categoryController.text,
                       dateTime: _dateTimeController.text,
-                      exchangeRate: double.parse(_exchangeRateController.text),
-                      convertedAmount:
-                          double.parse(_convertedAmountController.text),
+                      exchangeRate: 1,
+                      convertedAmount: double.parse(_amountController.text),
                       receipt: _receiptController.text,
                     );
 
