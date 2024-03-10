@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:splitpro/models/ModelProvider.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   final ExpenseGroup expenseGroup;
@@ -35,6 +36,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   void initState() {
     super.initState();
+    _dateTimeController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     _loadUsers();
   }
 
@@ -61,6 +63,23 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       });
     } catch (e) {
       print('Error loading users: $e');
+    }
+  }
+
+  DateTime _selectedDate = DateTime.now();
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateTimeController.text =
+            _selectedDate.toString(); // Update text field
+      });
     }
   }
 
@@ -92,7 +111,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   });
                 },
                 decoration: InputDecoration(
-                  labelText: 'User Name',
+                  labelText: 'Who paid?',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -124,9 +143,16 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 controller: _categoryController,
                 decoration: InputDecoration(labelText: 'Category'),
               ),
-              TextFormField(
+              TextField(
                 controller: _dateTimeController,
-                decoration: InputDecoration(labelText: 'Date Time'),
+                decoration: InputDecoration(
+                  labelText: 'Date Time',
+                  suffixIcon: IconButton(
+                    onPressed: () => _selectDate(context),
+                    icon: Icon(Icons.calendar_today),
+                  ),
+                ),
+                readOnly: true, // Disable editing directly
               ),
               TextFormField(
                 controller: _exchangeRateController,
@@ -151,7 +177,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       userName: _selectedUserName!,
                       expenseGroupExpensesId: widget.expenseGroup.id,
                       amount: double.parse(_amountController.text),
-                      currency: _currencyController.text,
+                      currency: 'INR',
                       groupId: widget.expenseGroup.id,
                       purpose: _purposeController.text,
                       category: _categoryController.text,
