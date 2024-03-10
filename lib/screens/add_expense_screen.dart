@@ -16,7 +16,6 @@ class AddExpenseScreen extends StatefulWidget {
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _currencyController = TextEditingController();
   final TextEditingController _purposeController = TextEditingController();
@@ -26,8 +25,43 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _convertedAmountController =
       TextEditingController();
   final TextEditingController _receiptController = TextEditingController();
+
+  late List<String> _userNames = [];
+  String? _selectedUserName = null;
   Future<void> _navigateToGroupDetails({ExpenseGroup? expenseGroup}) async {
     await context.pushNamed('group-details', extra: expenseGroup);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  Future<void> _loadUsers() async {
+    try {
+      final request = ModelQueries.list(ExpenseGroup.classType,
+          where: ExpenseGroup.ID.eq(widget.expenseGroup.id));
+      final response = await Amplify.API.query(request: request).response;
+
+      final users = response.data?.items
+          .map((e) => e?.members.map((e) => e))
+          .expand((element) => element!)
+          .toSet()
+          .toList();
+      if (response.errors.isNotEmpty) {
+        safePrint('Errors: ${response.errors}');
+        return;
+      }
+      setState(() {
+        _userNames = users!;
+      });
+      setState(() {
+        _selectedUserName = _userNames[0];
+      });
+    } catch (e) {
+      print('Error loading users: $e');
+    }
   }
 
   @override
@@ -42,12 +76,27 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _userNameController,
-                decoration: InputDecoration(labelText: 'User Name'),
+              DropdownButtonFormField<String>(
+                value: _selectedUserName,
+                items: _userNames
+                    .map<DropdownMenuItem<String>>(
+                      (String value) => DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedUserName = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'User Name',
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a user name';
+                    return 'Please select a user name';
                   }
                   return null;
                 },
@@ -99,7 +148,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   if (_formKey.currentState!.validate()) {
                     // Form is valid, create ExpenseEntry object
                     final newExpenseEntry = ExpenseEntry(
-                      userName: _userNameController.text,
+                      userName: _selectedUserName!,
                       expenseGroupExpensesId: widget.expenseGroup.id,
                       amount: double.parse(_amountController.text),
                       currency: _currencyController.text,
@@ -142,7 +191,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   void dispose() {
-    _userNameController.dispose();
     _amountController.dispose();
     _currencyController.dispose();
     _purposeController.dispose();
