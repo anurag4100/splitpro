@@ -1,0 +1,32 @@
+type BudgetEntry @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  title: String!
+  description: String
+  amount: Float!
+}
+
+type ExpenseEntry @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  userName: String!
+  amount: Float!
+  currency: String!
+  groupId: ID!
+  purpose: String
+  category: String
+  dateTime: String
+  exchangeRate: Float
+  convertedAmount: Float
+  receipt: String
+}
+
+type SplitAmount {
+  userName: String!
+  amount: Float!
+}
+
+type ExpenseGroup @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  groupName: String!
+  members: [String]!
+  expenses: [ExpenseEntry] @hasMany
+}
